@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Places in Bangalore</title>
+
+    <link rel='stylesheet prefetch' href='css/bootstrap.min.css'>
+    <style>
+        .panel-primary > .panel-heading {
+          background-color: red !important;
+          border-color: red !important;
+        }
+        .panel-primary {
+            border-color: red !important;
+        }
+        .btn-default {
+            background-color: red !important;
+        }
+        #map {
+            width: 1100px;
+            height: 450px;
+        }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="global-wrapper" ng-app="myApp">   
+    <div class="container" style="margin-top:5px;">
+    <div class="row panel panel-primary" ng-controller="homeCtrl">
+      <div class="panel-heading">
+        <h2 class="panel-title text-center">Places to visit in Bangalore</h2>
+      </div>
+      <!--     Places list   	 -->
+      <div class="panel-body" ng-view></div>
+    </div>
+    </div>
+
+    <script type="text/ng-template" id="home.html">
+      <ul class="list-group">
+        <li class="list-group-item"> 
+            <div class="input-group add-on" style="width:70%;padding:10px;">
+              <input class="form-control" placeholder="Seach Places" type="text" ng-model="searchText">
+              <div class="input-group-btn">
+                <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+              </div>
+            </div>
+            <a ng-href="#/add/" class="btn btn-primary" style="left:71%;;position: relative;width: 29%;top: -43px;background-color:red!important;border-color:red!important;"><i class="glyphicon glyphicon-plus-sign"></i>   Add Place</a>
+        <place class="list-group-item text-center" ng-repeat="place in places | orderBy: 'name' | filter: searchText "></place>
+        </li>
+    </ul>        
+    </script>
+
+    <!-- 	template for displaying a places info	 -->
+    <script type="text/ng-template" id="place_info.html">
+        <div class="list-group-item">
+          <a href="#/home"><button class="btn btn-default">
+            <span class="glyphicon glyphicon-circle-arrow-left"></span><span> - Back</span>
+          </button></a>
+        <h3 class="text-center">{{currentPlace.name}}</h3>
+        <div class="col-md-8">
+            <p><span style="color:green;">Description</span>: {{currentPlace.description}}</p>
+            <p><span style="color:green;">Address</span>: {{currentPlace.Address}}</p>
+            <p><span style="color:green;">Timings</span> : {{currentPlace.Hours}}</p>
+        </div>
+        <div class="col-md-4">
+              <p><img class="text-center" src={{currentPlace.img}} /></p>
+        </div>
+
+        <a ng-href="#/edit/{{places.indexOf(currentPlace)}}">
+          <button class="btn btn-default">
+            <span class="glyphicon glyphicon-pencil"></span><span> - Edit</span>
+          </button>
+        </a>
+
+        <a href="#/"><button class="btn btn-default" ng-click="removePlace(currentPlace)">
+          <span class="glyphicon glyphicon-remove"></span><span> - Remove</span>
+        </button></a>
+
+        <a href="#/map/{{places.indexOf(currentPlace)}}"><button class="btn btn-default">
+          <span class="glyphicon glyphicon-map-marker"></span><span> - Get Location in Map</span>
+        </button></a>
+        </div>
+    </script>
+
+    <!--   template used for both adding a new place and editing an existing place   -->
+    <script type="text/ng-template" id="place_form.html">
+        <div ng-controller="addPlaceCtrl">
+        <div class="list-group-item">
+
+          <div class="form-group">
+
+            <p><label for="name">name: </label> <input id="name" class="form-control" type="text" ng-model="currentPlace.name"> </p>
+            <p><label for="description">Description:</label> <input id="email" class="form-control" type="text" ng-model="currentPlace.description"> </p>
+            <p><label for="Address">Address:</label> <input id="phone" class="form-control" type="text" ng-model="currentPlace.Address"> </p>
+            <p><label for="Timings">Timings:</label> <input id="url" class="form-control" type="text" ng-model="currentPlace.Hours"> </p>
+              <input type="file" name="file" onchange="angular.element(this).scope().uploadFile(this)"/>
+          </div>
+
+          <a ng-if="path === '/add' " ng-href="#/place-info/{{ places.length - 1 }}" ng-click="addPlace()">
+            <button class="btn btn-default">
+             <span class="glyphicon glyphicon-ok"></span>
+             <span> Add</span>
+            </button>
+          </a>
+
+          <a ng-if="path !== '/add'" ng-href="#/place-info/{{index}}">
+            <button class="btn btn-default">
+             <span class="glyphicon glyphicon-ok"></span>
+             <span> Save Edits</span>
+            </button>
+          </a>
+
+          <a href="#/">
+            <button class="btn btn-default">
+              <span class="glyphicon glyphicon-remove"></span><span>  Cancel</span>
+            </button>
+          </a>
+        </div>
+        </div>
+    </script>
+
+    <!-- template used for the ng-repeat in the place list -->
+    <script type="text/ng-template" id="place.html">
+        <a ng-href="#/place-info/{{places.indexOf(place)}}">
+        {{place.name}}
+        </a>
+        </script>
+
+        <script type="text/ng-template" id="map.html">
+        <div id="map" style='margin-top:5px;'></div>
+        <a ng-click="goBack()" style="position: absolute;top: 8px;"><button style="background-color: #BCBCBC !important;" class="btn btn-default">
+            <span class="glyphicon glyphicon-circle-arrow-left"></span><span> - Back</span>
+        </button></a>
+    </script>
+    </div>
+      
+    <script src='lib/jquery.min.js'></script>
+    <script src='lib/angular.min.js'></script>
+    <script src='lib/angular-route.min.js'></script>
+    <script src="lib/map.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
